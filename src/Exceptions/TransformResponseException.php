@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Codenixsv\MessariApi\Exception;
 
-use \Exception;
+use Exception;
 
 /**
  * Class TransformResponseException

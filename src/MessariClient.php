@@ -16,7 +16,7 @@ use Codenixsv\MessariApi\Api\News;
  */
 class MessariClient
 {
-    const BASE_URI = 'https://data.messari.io/api/v1';
+    protected const BASE_URI = 'https://data.messari.io/api/v1';
 
     /** @var BaseClientInterface */
     private $baseClient;
