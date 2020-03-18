@@ -7,7 +7,11 @@
 
 A simple REST API client, written with PHP for [messari.io](https://messari.io).
 
-Messari.io [HTTP REST API documentation](https://messari.io/api/docs#tag/HTTP-REST-API).
+Messari provides free API endpoints for thousands of crypto assets. These endpoints include trades, market data (VWAP), quantitative metrics, qualitative information. This is the same API that drives the [messari.io](https://messari.io) web app.
+
+Most endpoints are accessible without an API key, but rate limited. This is free tier. This free tier does not include redistribution rights and requires attribution and a link back to [messari.io](https://messari.io).
+
+Messari.io [API documentation](https://messari.io/api/docs).
 
 ## Requirements
 
@@ -87,7 +91,7 @@ $data = $client->assets()->getMarketData('btc');
 Retrieve historical timeseries data for an asset.
 
 ```php
-$data = $client->assets()->getTimeseries('btc', 'price', '2020-01-01', '2020-01-07', '1d');
+$data = $client->assets()->getTimeseries('btc', 'price', ['start' => '2020-01-01', 'end' => '2020-01-07', 'interval' => '1d']);
 ```
 
 ### Markets
@@ -105,7 +109,7 @@ $data = $client->markets()->getAll();
 Retrieve historical timeseries data for a market.
 
 ```php
-$data = $client->markets()->getTimeseries('binance-btc-usdt', 'price', '2020-01-01', '2020-01-07', '1d');
+$data = $client->markets()->getTimeseries('binance-btc-usdt', 'price', ['start' => '2020-01-01', 'end' => '2020-01-07', 'interval' => '1d']);
 ```
 
 ### News
