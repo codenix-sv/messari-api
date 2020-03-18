@@ -21,12 +21,7 @@ class Markets extends Api
      */
     public function getAll(?int $page = null, ?string $fields = null): array
     {
-        $params = array_filter(compact('fields', 'page'), function ($value) {
-            return !is_null($value);
-        });
-
-        $query = http_build_query($params);
-        $query = empty($query) ? $query : ('?' . $query);
+        $query = $this->queryBuilder->buildQuery(compact('fields', 'page'));
         $response = $this->client->getBaseClient()->get('/markets' . $query);
 
         return $this->transformer->transform($response);
@@ -61,37 +56,10 @@ class Markets extends Api
         ?string $order = null,
         ?string $format = null
     ): array {
-        $query = $this->buildQueryGetTimeseries($start, $end, $interval, $columns, $order, $format);
-        $query = empty($query) ? $query : ('?' . $query);
+        $query = $this->queryBuilder->buildQuery(compact('start', 'end', 'interval', 'columns', 'order', 'format'));
         $response = $this->client->getBaseClient()->get('/markets/' . strtolower($assetKey) . '/metrics/'
             . $metricID . '/time-series' . $query);
 
         return $this->transformer->transform($response);
-    }
-
-    /**
-     * @param string|null $start
-     * @param string|null $end
-     * @param string|null $interval
-     * @param string|null $columns
-     * @param string|null $order
-     * @param string|null $format
-     * @return string
-     */
-    private function buildQueryGetTimeseries(
-        ?string $start = null,
-        ?string $end = null,
-        ?string $interval = null,
-        ?string $columns = null,
-        ?string $order = null,
-        ?string $format = null
-    ): string {
-        $data = compact('start', 'end', 'interval', 'columns', 'order', 'format');
-
-        $params = array_filter($data, function ($value) {
-            return !is_null($value);
-        });
-
-        return http_build_query($params);
     }
 }

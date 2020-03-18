@@ -34,9 +34,16 @@ class Assets extends Api
         ?int  $page = null,
         ?int $limit = null
     ): array {
-        $query = $this->buildQueryGetAll($withMetrics, $withProfiles, $fields, $sort, $page, $limit);
-        $endpoint = empty($query) ? '/assets' : '/assets?' . $query;
-        $response = $this->client->getBaseClient()->get($endpoint);
+        $params = compact('fields', 'sort', 'page', 'limit');
+        if (true === $withMetrics) {
+            $params['with-metrics'] = '';
+        }
+        if (true === $withProfiles) {
+            $params['with-profiles'] = '';
+        }
+
+        $query = $this->queryBuilder->buildQuery($params);
+        $response = $this->client->getBaseClient()->get('/assets' . $query);
 
         return $this->transformer->transform($response);
     }
@@ -51,7 +58,7 @@ class Assets extends Api
      */
     public function get(string $assetKey, ?string $fields = null): array
     {
-        $query = is_null($fields) ? '' : '?' . http_build_query(compact($fields));
+        $query = $this->queryBuilder->buildQuery(compact('fields'));
         $response = $this->client->getBaseClient()->get('/assets/' . strtolower($assetKey) . $query);
 
         return $this->transformer->transform($response);
@@ -67,7 +74,7 @@ class Assets extends Api
      */
     public function getProfile(string $assetKey, ?string $fields = null): array
     {
-        $query = is_null($fields) ? '' : '?' . http_build_query(compact($fields));
+        $query = $this->queryBuilder->buildQuery(compact('fields'));
         $response = $this->client->getBaseClient()->get('/assets/' . strtolower($assetKey) . '/profile' . $query);
 
         return $this->transformer->transform($response);
@@ -83,7 +90,7 @@ class Assets extends Api
      */
     public function getMetrics(string $assetKey, ?string $fields = null): array
     {
-        $query = is_null($fields) ? '' : '?' . http_build_query(compact($fields));
+        $query = $this->queryBuilder->buildQuery(compact('fields'));
         $response = $this->client->getBaseClient()->get('/assets/' . strtolower($assetKey) . '/metrics' . $query);
 
         return $this->transformer->transform($response);
@@ -100,7 +107,7 @@ class Assets extends Api
      */
     public function getMarketData(string $assetKey, ?string $fields = null): array
     {
-        $query = is_null($fields) ? '' : '?' . http_build_query(compact($fields));
+        $query = $this->queryBuilder->buildQuery(compact('fields'));
         $response = $this->client->getBaseClient()->get('/assets/' . strtolower($assetKey) . '/metrics'
             . '/market-data' . $query);
 
@@ -136,69 +143,10 @@ class Assets extends Api
         ?string $order = null,
         ?string $format = null
     ): array {
-        $query = $this->buildQueryGetTimeseries($start, $end, $interval, $columns, $order, $format);
-        $query = empty($query) ? $query : ('?' . $query);
+        $query = $this->queryBuilder->buildQuery(compact('start', 'end', 'interval', 'columns', 'order', 'format'));
         $response = $this->client->getBaseClient()->get('/assets/' . strtolower($assetKey) . '/metrics/'
         . $metricID . '/time-series' . $query);
 
         return $this->transformer->transform($response);
-    }
-
-    /**
-     * @param bool $withMetrics
-     * @param bool $withProfiles
-     * @param string|null $fields
-     * @param string|null $sort
-     * @param int|null $page
-     * @param int|null $limit
-     * @return string
-     */
-    private function buildQueryGetAll(
-        bool $withMetrics = false,
-        bool $withProfiles = false,
-        ?string $fields = null,
-        ?string $sort = null,
-        ?int  $page = null,
-        ?int $limit = null
-    ): string {
-        $data = compact('fields', 'sort', 'page', 'limit');
-        if (true === $withMetrics) {
-            $data['with-metrics'] = '';
-        }
-        if (true === $withProfiles) {
-            $data['with-profiles'] = '';
-        }
-
-        $params = array_filter($data, function ($value) {
-            return !is_null($value);
-        });
-
-        return http_build_query($params);
-    }
-
-    /**
-     * @param string|null $start
-     * @param string|null $end
-     * @param string|null $interval
-     * @param string|null $columns
-     * @param string|null $order
-     * @param string|null $format
-     * @return string
-     */
-    private function buildQueryGetTimeseries(
-        ?string $start = null,
-        ?string $end = null,
-        ?string $interval = null,
-        ?string $columns = null,
-        ?string $order = null,
-        ?string $format = null
-    ): string {
-        $data = compact('start', 'end', 'interval', 'columns', 'order', 'format');
-
-        $params = array_filter($data, function ($value) {
-            return !is_null($value);
-        });
-
-        return http_build_query($params);
     }
 }

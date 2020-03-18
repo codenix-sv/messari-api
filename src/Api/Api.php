@@ -6,6 +6,8 @@ namespace Codenixsv\MessariApi\Api;
 
 use Codenixsv\MessariApi\Message\ResponseTransformer;
 use Codenixsv\MessariApi\MessariClient;
+use Codenixsv\MessariApi\Api\Query\QueryBuilder;
+use Codenixsv\MessariApi\Api\Query\QueryBuilderInterface;
 
 /**
  * Class Api
@@ -19,14 +21,19 @@ class Api
     /** @var ResponseTransformer  */
     protected $transformer;
 
+    /** @var QueryBuilderInterface */
+    protected $queryBuilder;
+
     /**
      * Api constructor.
-     * @param $client
+     * @param MessariClient $client
+     * @param QueryBuilderInterface|null $queryBuilder
      */
-    public function __construct(MessariClient $client)
+    public function __construct(MessariClient $client, ?QueryBuilderInterface $queryBuilder = null)
     {
         $this->client = $client;
         $this->transformer = new ResponseTransformer();
+        $this->queryBuilder = $queryBuilder ?: new QueryBuilder();
     }
 
     /**

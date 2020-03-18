@@ -21,12 +21,7 @@ class News extends Api
      */
     public function getAll(?int $page = null, ?string $fields = null): array
     {
-        $params = array_filter(compact('fields', 'page'), function ($value) {
-            return !is_null($value);
-        });
-
-        $query = http_build_query($params);
-        $query = empty($query) ? $query : ('?' . $query);
+        $query = $this->queryBuilder->buildQuery(compact('fields', 'page'));
         $response = $this->client->getBaseClient()->get('/news' . $query);
 
         return $this->transformer->transform($response);
@@ -52,7 +47,7 @@ class News extends Api
             $params['as_markdown'] = $asMarkdown;
         }
 
-        $query = empty($params) ? '' : ('?' . http_build_query($params));
+        $query = $this->queryBuilder->buildQuery($params);
         $response = $this->client->getBaseClient()->get('/news/' . strtolower($assetKey) . $query);
 
         return $this->transformer->transform($response);
