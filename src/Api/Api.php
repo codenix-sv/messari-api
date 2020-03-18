@@ -8,6 +8,7 @@ use Codenixsv\MessariApi\Message\ResponseTransformer;
 use Codenixsv\MessariApi\MessariClient;
 use Codenixsv\MessariApi\Api\Query\QueryBuilder;
 use Codenixsv\MessariApi\Api\Query\QueryBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class Api
@@ -42,5 +43,36 @@ class Api
     public function getClient(): MessariClient
     {
         return $this->client;
+    }
+
+    /**
+     * @param string $path
+     * @param string $assetKey
+     * @param string $metricId
+     * @param array $params
+     * @return array
+     * @throws \Exception
+     */
+    protected function timeseries(string $path, string $assetKey, string $metricId, array $params): array
+    {
+        $query = $this->queryBuilder->buildQuery($params);
+        $response = $this->client->getBaseClient()->get('/' . $path . '/' . strtolower($assetKey) . '/metrics/'
+            . $metricId . '/time-series' . $query);
+
+        return $this->transformer->transform($response);
+    }
+
+    /**
+     * @param string $path
+     * @param array $params
+     * @return array
+     * @throws \Exception
+     */
+    protected function all(string $path, array $params): array
+    {
+        $query = $this->queryBuilder->buildQuery($params);
+        $response = $this->client->getBaseClient()->get('/' . $path . $query);
+
+        return $this->transformer->transform($response);
     }
 }

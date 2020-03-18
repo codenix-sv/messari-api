@@ -27,7 +27,7 @@ class AssetsTest extends TestCase
     public function testGetAllWithParams()
     {
         $assets = $this->createAssets($this->mockSuccessfulResponse());
-        $assets->getAll(true, true);
+        $assets->getAll(['with-metrics' => '', 'with-profiles' => '']);
 
         /** @var RequestInterface $request */
         $request = $assets->getClient()->getBaseClient()->getHttpClient()->getLastRequest();
@@ -96,7 +96,11 @@ class AssetsTest extends TestCase
     public function testGetTimeseriesWithParams()
     {
         $assets = $this->createAssets($this->mockSuccessfulResponse());
-        $assets->getTimeseries('btc', 'price', '2020-01-01', '2020-01-07', '1d');
+        $assets->getTimeseries('btc', 'price', [
+            'start' => '2020-01-01',
+            'end' => '2020-01-07',
+            'interval' => '1d'
+        ]);
 
         /** @var RequestInterface $request */
         $request = $assets->getClient()->getBaseClient()->getHttpClient()->getLastRequest();

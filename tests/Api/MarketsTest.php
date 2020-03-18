@@ -27,7 +27,7 @@ class MarketsTest extends TestCase
     public function testGetAllWithParams()
     {
         $markets = $this->createMarkets($this->mockSuccessfulResponse());
-        $markets->getAll(1);
+        $markets->getAll(['page' => 1]);
 
         /** @var RequestInterface $request */
         $request = $markets->getClient()->getBaseClient()->getHttpClient()->getLastRequest();
@@ -50,7 +50,11 @@ class MarketsTest extends TestCase
     public function testGetTimeseriesWithParams()
     {
         $markets = $this->createMarkets($this->mockSuccessfulResponse());
-        $markets->getTimeseries('binance-btc-usdt', 'price', '2020-01-01', '2020-01-07', '1d');
+        $markets->getTimeseries('binance-btc-usdt', 'price', [
+            'start' => '2020-01-01',
+            'end' => '2020-01-07',
+            'interval' => '1d'
+        ]);
 
         /** @var RequestInterface $request */
         $request = $markets->getClient()->getBaseClient()->getHttpClient()->getLastRequest();

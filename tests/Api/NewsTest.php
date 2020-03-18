@@ -16,7 +16,7 @@ class NewsTest extends TestCase
 {
     public function testGetAll()
     {
-        $news = $this->createMarkets($this->mockSuccessfulResponse());
+        $news = $this->createNews($this->mockSuccessfulResponse());
         $news->getAll();
 
         /** @var RequestInterface $request */
@@ -26,8 +26,8 @@ class NewsTest extends TestCase
 
     public function testGetAllWithParams()
     {
-        $news = $this->createMarkets($this->mockSuccessfulResponse());
-        $news->getAll(1);
+        $news = $this->createNews($this->mockSuccessfulResponse());
+        $news->getAll(['page' => 1]);
 
         /** @var RequestInterface $request */
         $request = $news->getClient()->getBaseClient()->getHttpClient()->getLastRequest();
@@ -36,7 +36,7 @@ class NewsTest extends TestCase
 
     public function testGetForAsset()
     {
-        $news = $this->createMarkets($this->mockSuccessfulResponse());
+        $news = $this->createNews($this->mockSuccessfulResponse());
         $news->getForAsset('btc');
 
         /** @var RequestInterface $request */
@@ -46,8 +46,8 @@ class NewsTest extends TestCase
 
     public function testGetForAssetWithParams()
     {
-        $news = $this->createMarkets($this->mockSuccessfulResponse());
-        $news->getForAsset('btc', 'title,content,author/name', true);
+        $news = $this->createNews($this->mockSuccessfulResponse());
+        $news->getForAsset('btc', ['fields' => 'title,content,author/name', 'as_markdown' => true]);
 
         /** @var RequestInterface $request */
         $request = $news->getClient()->getBaseClient()->getHttpClient()->getLastRequest();
@@ -61,7 +61,7 @@ class NewsTest extends TestCase
      * @param ResponseInterface $response
      * @return News
      */
-    private function createMarkets(ResponseInterface $response): News
+    private function createNews(ResponseInterface $response): News
     {
         $httpClientMock = new HttpMockClient();
         $httpClientMock->addResponse($response);

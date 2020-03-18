@@ -15,37 +15,13 @@ class Assets extends Api
     /**
      * Get the paginated list of all assets and their metrics and profiles.
      *
-     * @param bool $withMetrics existence of this query param filters assets to those with quantitative data
-     * @param bool $withProfiles existence of this query param filters assets to those with qualitative data
-     * @param string|null $fields pare down the returned fields (comma , separated, drill down with a slash /)
-     * @param string|null $sort default sort is "marketcap desc", but the only valid value for this query
-     *  param is "id" which translates to "id asc", which is useful for a stable sort while paginating
-     * @param int|null $page Page number, starts at 1. Increment to paginate through
-     *  results (until result is empty array)
-     * @param int|null $limit default is 20, max is 500
+     * @param array $params
      * @return array
      * @throws Exception
      */
-    public function getAll(
-        bool $withMetrics = false,
-        bool $withProfiles = false,
-        ?string $fields = null,
-        ?string $sort = null,
-        ?int  $page = null,
-        ?int $limit = null
-    ): array {
-        $params = compact('fields', 'sort', 'page', 'limit');
-        if (true === $withMetrics) {
-            $params['with-metrics'] = '';
-        }
-        if (true === $withProfiles) {
-            $params['with-profiles'] = '';
-        }
-
-        $query = $this->queryBuilder->buildQuery($params);
-        $response = $this->client->getBaseClient()->get('/assets' . $query);
-
-        return $this->transformer->transform($response);
+    public function getAll($params = []): array
+    {
+        return $this->all('assets', $params);
     }
 
     /**
@@ -118,35 +94,14 @@ class Assets extends Api
      * Retrieve historical timeseries data for an asset.
      *
      * @param string $assetKey This "key" can be the asset's ID (unique), slug (unique), or symbol (non-unique)
-     * @param string $metricID The metricID is a unique identifier which describes the type of data returned by
+     * @param string $metricId The metricID is a unique identifier which describes the type of data returned by
      *  time-series endpoints.
-     * @param string|null $start The "start" query parameter can be used to set the start date after which points
-     *  are returned.
-     * @param string|null $end The "end" query parameter can be used to set the end date after which no more points
-     *  will be returned.
-     * @param string|null $interval Defines what interval the resulting points will be returned in.
-     * @param string|null $columns A comma separated list of strings that controls which columns will be returned and
-     *  in what order.
-     * @param string|null $order Order controls whether points in the response are returned in ascending or
-     *  descending order.
-     * @param string|null $format Specify format = csv to download data as CSV.
+     * @param array $params
      * @return array
      * @throws Exception
      */
-    public function getTimeseries(
-        string $assetKey,
-        string $metricID,
-        ?string $start = null,
-        ?string $end = null,
-        ?string $interval = null,
-        ?string $columns = null,
-        ?string $order = null,
-        ?string $format = null
-    ): array {
-        $query = $this->queryBuilder->buildQuery(compact('start', 'end', 'interval', 'columns', 'order', 'format'));
-        $response = $this->client->getBaseClient()->get('/assets/' . strtolower($assetKey) . '/metrics/'
-        . $metricID . '/time-series' . $query);
-
-        return $this->transformer->transform($response);
+    public function getTimeseries(string $assetKey, string $metricId, array $params = []): array
+    {
+        return $this->timeseries('assets', $assetKey, $metricId, $params);
     }
 }
