@@ -1,3 +1,8 @@
+# This repository is no longer active.
+⛔ No new issues ⛔ No pull requests ⛔ No maintenance
+
+Source code is kept only for reference purposes.
+
 # Messari.io PHP REST API Client
 [![Build Status](https://travis-ci.org/codenix-sv/messari-api.svg?branch=master)](https://travis-ci.org/codenix-sv/messari-api)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/codenix-sv/messari-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/codenix-sv/messari-api/?branch=master)
